@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from math import sqrt
 import sys
@@ -65,7 +65,7 @@ class stlwriter():
 		self.written = 0
 		
 		# write binary stl header with predicted facet count
-		self.f.write('\0' * 80)
+		self.f.write(('\0' * 80).encode())
 		# (facet count is little endian 4 byte unsigned int)
 		self.f.write(pack('<I', facet_count))
 	
@@ -78,7 +78,7 @@ class stlwriter():
 		for vertex in t:
 			self.f.write(pack('<3f', *vertex))
 		# facet records conclude with two null bytes (unused "attributes")
-		self.f.write('\0\0')
+		self.f.write('\0\0'.encode())
 		self.written += 1
 	
 	def done(self):
@@ -99,7 +99,7 @@ def fail(msg):
 
 def log(msg):
 	if args.verbose:
-		print >> sys.stderr, msg
+		print(msg, file=sys.stderr)
 
 ap = argparse.ArgumentParser(description='Convert a GDAL raster (like a GeoTIFF heightmap) to an STL terrain surface.')
 ap.add_argument('-x', action='store', default=0.0, type=float, help='Fit output x to extent (mm)')
@@ -122,7 +122,7 @@ args = ap.parse_args()
 
 try:
 	img = gdal.Open(args.RASTER)
-except RuntimeError, e:
+except RuntimeError as e:
 	fail(str(e).strip())
 
 # input raster dimensions
